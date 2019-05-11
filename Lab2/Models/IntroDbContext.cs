@@ -14,5 +14,6 @@ namespace Lab2.Models
         }
 
         public DbSet<Expenses> Expensess { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }

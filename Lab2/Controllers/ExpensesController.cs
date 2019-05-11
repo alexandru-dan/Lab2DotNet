@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Lab2.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lab2.Controllers
 {
@@ -21,10 +22,10 @@ namespace Lab2.Controllers
 
         // GET: api/Expensess
         [HttpGet]
-        public IEnumerable<Expenses> Get([FromQuery]DateTime? from, [FromQuery]DateTime? to, [FromQuery]string type)
+        public IEnumerable<Expenses> Get([FromQuery]DateTime? from, [FromQuery]DateTime? to, [FromQuery]Models.Type? type)
         {
 
-            IQueryable<Expenses> result = context.Expensess;
+            IQueryable<Expenses> result = context.Expensess.Include(f => f.Comments);
             if ((from == null && to == null) && type == null)
             {
                 return result;
