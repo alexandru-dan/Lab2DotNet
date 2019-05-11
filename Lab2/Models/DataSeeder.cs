@@ -7,7 +7,7 @@ namespace Lab2.Models
 {
     public class DataSeeder
     {
-        public static void Initalize(IntroDbContext context)
+        public static void Initialize(IntroDbContext context)
         {
             context.Database.EnsureCreated();
 

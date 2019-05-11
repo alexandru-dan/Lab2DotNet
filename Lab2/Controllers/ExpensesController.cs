@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Lab2.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,85 +10,73 @@ namespace Lab2.Controllers
 {
     public class ExpensesController : Controller
     {
-        // GET: Expenses
-        public ActionResult Index()
+        private IntroDbContext context; 
+
+        public ExpensesController(IntroDbContext context)
         {
-            return View();
+            this.context = context;
         }
 
-        // GET: Expenses/Details/5
-        public ActionResult Details(int id)
+        // GET: api/Expenses
+        [HttpGet]
+        public IEnumerable<Expenses> Get()
         {
-            return View();
+            return context.Expenses;
         }
 
-        // GET: Expenses/Create
-        public ActionResult Create()
+        // GET: api/Expenses/5
+        [HttpGet("{id}", Name = "Get")]
+        public Expenses Get(int id)
         {
-            return View();
+            return context.Expenses.FirstOrDefault(c => c.Id == id);
         }
-
-        // POST: Expenses/Create
+       
+        // POST: api/Expenses
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Post([FromBody] Expenses expenses)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                return BadRequest(ModelState);
             }
-            catch
-            {
-                return View();
-            }
+            context.Expenses.Add(expenses);
+            context.SaveChanges();
+            return Ok();
         }
 
-        // GET: Expenses/Edit/5
-        public ActionResult Edit(int id)
+        // PUT: api/Expenses/5
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Expenses expenses)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existing = context.Expenses.FirstOrDefault(c => c.Id == id);
+            if (existing != null)
+            {
+                expenses.Id = existing.Id;
+                context.Expenses.Remove(existing);
+            }
+
+            context.Expenses.Add(expenses);
+            context.SaveChanges();
+            return Ok();
         }
-
-        // POST: Expenses/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
         {
-            try
+            var found = context.Expenses.FirstOrDefault(c => c.Id == id);
+            if (found == null)
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: Expenses/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Expenses/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            context.Expenses.Remove(found);
+            context.SaveChanges();
+            return Ok();
         }
     }
 }
