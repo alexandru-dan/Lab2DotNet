@@ -11,7 +11,7 @@ namespace Lab2.Models
         {
             context.Database.EnsureCreated();
 
-            if (context.Expenses.Any())
+            if (context.Expensess.Any())
             {
                 return;
             }

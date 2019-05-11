@@ -8,30 +8,45 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.Controllers
 {
-    public class ExpensesController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ExpensesController : ControllerBase
     {
-        private IntroDbContext context; 
+        private IntroDbContext context;
 
         public ExpensesController(IntroDbContext context)
         {
             this.context = context;
         }
 
-        // GET: api/Expenses
+        // GET: api/Expensess
         [HttpGet]
-        public IEnumerable<Expenses> Get()
+        public IEnumerable<Expenses> Get([FromQuery]DateTime? from, [FromQuery]DateTime? to)
         {
-            return context.Expenses;
+            IQueryable<Expenses> result = context.Expensess;
+            if (from == null && to == null)
+            {
+                return result;
+            }
+            if (from != null)
+            {
+                result = result.Where(f => f.Date >= from);
+            }
+            if (to != null)
+            {
+                result = result.Where(f => f.Date <= to);
+            }
+            return result;
         }
 
-        // GET: api/Expenses/5
+        // GET: api/Expensess/5
         [HttpGet("{id}", Name = "Get")]
         public Expenses Get(int id)
         {
-            return context.Expenses.FirstOrDefault(c => c.Id == id);
+            return context.Expensess.FirstOrDefault(c => c.Id == id);
         }
-       
-        // POST: api/Expenses
+
+        // POST: api/Expensess
         [HttpPost]
         public IActionResult Post([FromBody] Expenses expenses)
         {
@@ -39,12 +54,12 @@ namespace Lab2.Controllers
             {
                 return BadRequest(ModelState);
             }
-            context.Expenses.Add(expenses);
+            context.Expensess.Add(expenses);
             context.SaveChanges();
             return Ok();
         }
 
-        // PUT: api/Expenses/5
+        // PUT: api/Expensess/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Expenses expenses)
         {
@@ -53,14 +68,14 @@ namespace Lab2.Controllers
                 return BadRequest(ModelState);
             }
 
-            var existing = context.Expenses.FirstOrDefault(c => c.Id == id);
+            var existing = context.Expensess.FirstOrDefault(c => c.Id == id);
             if (existing != null)
             {
                 expenses.Id = existing.Id;
-                context.Expenses.Remove(existing);
+                context.Expensess.Remove(existing);
             }
 
-            context.Expenses.Add(expenses);
+            context.Expensess.Add(expenses);
             context.SaveChanges();
             return Ok();
         }
@@ -68,13 +83,13 @@ namespace Lab2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var found = context.Expenses.FirstOrDefault(c => c.Id == id);
+            var found = context.Expensess.FirstOrDefault(c => c.Id == id);
             if (found == null)
             {
                 return NotFound();
             }
 
-            context.Expenses.Remove(found);
+            context.Expensess.Remove(found);
             context.SaveChanges();
             return Ok();
         }

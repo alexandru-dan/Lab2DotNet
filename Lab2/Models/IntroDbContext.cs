@@ -13,6 +13,6 @@ namespace Lab2.Models
 
         }
 
-        public DbSet<Expenses> Expenses { get; set; }
+        public DbSet<Expenses> Expensess { get; set; }
     }
 }
