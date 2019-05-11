@@ -21,10 +21,11 @@ namespace Lab2.Controllers
 
         // GET: api/Expensess
         [HttpGet]
-        public IEnumerable<Expenses> Get([FromQuery]DateTime? from, [FromQuery]DateTime? to)
+        public IEnumerable<Expenses> Get([FromQuery]DateTime? from, [FromQuery]DateTime? to, [FromQuery]string type)
         {
+
             IQueryable<Expenses> result = context.Expensess;
-            if (from == null && to == null)
+            if ((from == null && to == null) && type == null)
             {
                 return result;
             }
@@ -35,6 +36,10 @@ namespace Lab2.Controllers
             if (to != null)
             {
                 result = result.Where(f => f.Date <= to);
+            }
+            if(type != null)
+            {
+                result = result.Where(f => f.Type.Equals(type));
             }
             return result;
         }
