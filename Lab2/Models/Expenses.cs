@@ -14,5 +14,6 @@ namespace Lab2.Models
         public DateTime Date { get; set; }
         public string Currency { get; set; }
         public string Type { get; set; }
+
     }
 }
