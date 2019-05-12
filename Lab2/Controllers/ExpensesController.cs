@@ -74,22 +74,23 @@ namespace Lab2.Controllers
                 return BadRequest(ModelState);
             }
 
-            var existing = context.Expensess.FirstOrDefault(c => c.Id == id);
-            if (existing != null)
+            var existing = context.Expensess.AsNoTracking().FirstOrDefault(c => c.Id == id);
+            if (existing == null)
             {
-                expenses.Id = existing.Id;
-                context.Expensess.Remove(existing);
+                context.Expensess.Add(expenses);
+                context.SaveChanges();
+                return Ok();
             }
-
-            context.Expensess.Add(expenses);
-            context.SaveChanges();
-            return Ok();
+                  expenses.Id = id;
+                  context.Expensess.Update(expenses);
+                  context.SaveChanges();
+                  return Ok();
         }
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var found = context.Expensess.FirstOrDefault(c => c.Id == id);
+            var found = context.Expensess.Include(f => f.Comments).FirstOrDefault(c => c.Id == id);
             if (found == null)
             {
                 return NotFound();

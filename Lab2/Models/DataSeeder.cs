@@ -15,6 +15,27 @@ namespace Lab2.Models
             {
                 return;
             }
+
+            context.Expensess.AddRange(
+                new Expenses
+                {
+                    Description = "Titanic",
+                    Sum = 17.20,
+                    Location = "Cluj-Napoca",
+                    Date = DateTime.Today,
+                    Currency = "Lei",
+                    Type = Type.Other
+                },
+                new Expenses
+                {
+                    Description = "Apa",
+                    Sum = 7.20,
+                    Location = "Cluj-Napoca",
+                    Date = DateTime.Today,
+                    Currency = "Lei",
+                    Type = Type.Food
+                });
+
         }
     }
 }
